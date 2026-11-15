@@ -1,0 +1,67 @@
+# ---- Dataset locations: EDIT THESE ----
+paths:
+  # Folder that contains ASVspoof2019_LA_train/, ASVspoof2019_LA_dev/, ASVspoof2019_LA_eval/
+  # and ASVspoof2019_LA_cm_protocols/
+  asvspoof_la: C:/datasets/LA
+  # Folder that contains meta.csv and the .wav files of the In-the-Wild release
+  in_the_wild: C:/datasets/release_in_the_wild
+  # DEEP-VOICE (RVC voice conversion), unpacked from the HF mirror SpeechAntiSpoofingBenchmarks/DeepVoice
+  deepvoice: C:/datasets/deepvoice
+  # hindi/real/<speaker>/*.wav and hindi/fake/<speaker>/*.wav  (optional meta.csv)
+  hindi: data/hindi
+  noise_dir: null          # optional folder of noise .wav files (e.g. MUSAN noise); null = synthetic noise
+  cache: C:/datasets/cache  # ~16 GB of XLS-R features; kept outside OneDrive so it isn't synced
+  checkpoints: checkpoints
+  results: results
+
+audio:
+  sr: 16000
+  seconds: 4.0             # model window
+  hop_seconds: 2.0         # hop between windows in the apps (EER evaluation uses the first 4 s, as in ASVspoof)
+
+augment:                   # applied on the fly to training clips only
+  p: 0.8                   # probability that a clip is augmented at all
+  speakerphone: {p: 0.35, snr_db: [10, 25]}   # whole in-call chain (call -> loudspeaker -> room -> mic + noise); else the effects below
+  room: {p: 0.4}           # small-room echo + cheap-mic EQ (laptop / phone mic)
+  noise: {p: 0.5, snr_db: [5, 30]}
+  mp3: {p: 0.25}
+  opus: {p: 0.3}           # WhatsApp voice notes / VoIP calls
+  phone: {p: 0.3}          # 8 kHz, 300-3400 Hz band-pass, mu-law
+  gain: {p: 0.5, db: [-6, 6]}
+
+gmm:
+  n_components: 512
+  max_frames_per_class: 400000
+  n_mfcc: 20
+
+cnn:
+  n_mels: 80
+  epochs: 20
+  batch_size: 32
+  lr: 1.0e-3
+
+w2v:
+  model_name: facebook/wav2vec2-xls-r-300m
+  cache_batch_size: 8
+  train_aug_copies: 1      # extra augmented copies of each train clip cached (frozen backbone -> offline augmentation)
+  train_sets: [asvspoof_train, itw_train, "deepvoice_train*5"]
+  dev_sets: [asvspoof_dev, itw_dev, deepvoice_dev]
+  epochs: 30
+  batch_size: 128
+  lr: 1.0e-3
+
+student:
+  # real-world speech (In-the-Wild, speaker-disjoint split) is what makes phone / WhatsApp audio work
+  # deepvoice (RVC voice-changer fakes) is small, so it is shown 5x per epoch
+  train_sets: [asvspoof_train, itw_train, "deepvoice_train*5"]
+  dev_sets: [asvspoof_dev, itw_dev, deepvoice_dev]   # dev = threshold calibration, includes RVC fakes
+  dev_limit: 4000          # per dev set, keeps the per-epoch check fast
+  epochs: 30
+  batch_size: 64
+  lr: 2.0e-3
+  kd_alpha: 0.5            # weight of teacher (soft label) loss vs. ground truth
+  kd_temperature: 2.0
+
+train:
+  num_workers: 4
+  seed: 42

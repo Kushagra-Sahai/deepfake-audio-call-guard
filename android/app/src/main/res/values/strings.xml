@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a11y_description">Lets Call Guard listen to a call on speakerphone and warn you if the caller\'s voice may be AI-generated. It does not read your screen. Audio is analysed on the phone and never stored or sent anywhere. Checking only runs when you turn it on in the Call Guard app.</string>
+</resources>

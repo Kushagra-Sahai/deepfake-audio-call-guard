@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>Call Guard</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Call Guard</h1>
+    <p class="sub">Checks if a voice is AI-generated. Runs fully on this device — no audio leaves it.</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-clip" aria-selected="true">Check a clip</button>
+    <button role="tab" id="tab-live" aria-selected="false">Call Guard live</button>
+  </nav>
+
+  <main>
+    <p id="model-status" class="status">Loading model…</p>
+    <select id="model-pick" hidden aria-label="Model">
+      <option value="big">Big model – XLS-R (more accurate, needs this laptop)</option>
+      <option value="phone">Phone model – tiny, works offline</option>
+    </select>
+
+    <!-- ---------------- Check a clip ---------------- -->
+    <section id="panel-clip">
+      <p class="hint">Pick a voice note or call recording, or record a few seconds of the voice.</p>
+      <div class="row">
+        <label class="btn primary">Choose audio file
+          <input id="file" type="file" accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.opus,.flac" hidden>
+        </label>
+        <button id="rec" class="btn">● Record 8 s</button>
+      </div>
+      <div id="clip-result" class="result" hidden>
+        <div id="verdict" class="verdict"></div>
+        <audio id="clip-audio" controls hidden></audio>
+        <div class="bars" id="bars" aria-label="Fake probability per 4-second window"></div>
+        <p class="small" id="clip-meta"></p>
+      </div>
+    </section>
+
+    <!-- ---------------- Live ---------------- -->
+    <section id="panel-live" hidden>
+      <div class="howto">
+        <b>How to use during a call</b>
+        <ol>
+          <li>Put the call on <b>speaker</b>.</li>
+          <li>Open this page on <b>another phone or laptop</b> next to it and tap Start.
+            <span class="small">(Phones block the mic for other apps during a call. On Android, the Call Guard app can check on the same phone.)</span></li>
+        </ol>
+      </div>
+      <button id="live-toggle" class="btn primary big">Start Call Guard</button>
+      <div class="meter-wrap">
+        <div class="meter"><div id="meter-fill"></div></div>
+        <div id="meter-label" class="meter-label">Idle</div>
+      </div>
+      <p class="small" id="live-meta"></p>
+    </section>
+  </main>
+
+  <div id="alert" class="alert" hidden role="alertdialog" aria-labelledby="alert-title">
+    <div class="alert-box">
+      <h2 id="alert-title">⚠ This voice may be AI-generated</h2>
+      <p>Verify before sending money or sharing an OTP.</p>
+      <ul>
+        <li>Hang up and call the person back on their <b>saved number</b>.</li>
+        <li>Ask a question only they would know, or your <b>family code word</b>.</li>
+        <li>Never share OTPs, PINs or passwords on a call.</li>
+      </ul>
+      <button id="alert-close" class="btn primary">I understand</button>
+    </div>
+  </div>
+
+  <footer class="small">Results are indicative, not proof. New voice-cloning tools may not be detected.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "sr": 16000,
+  "window": 64000,
+  "hop": 32000,
+  "threshold": 0.8931,
+  "live_threshold": 0.9736,
+  "consecutive": 3,
+  "dev_eer": 0.0557
+}

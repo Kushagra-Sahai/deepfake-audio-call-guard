@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+cache/
+checkpoints/
+results/scores_*.npy
+data/
+web/model/student_fp32.onnx
+web/model/student_int8.onnx
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.iml
+
+# Local logs and packaged Android builds
+logs/
+*.apk
+

@@ -1,0 +1,16 @@
+# Install PyTorch with CUDA first (RTX GPUs), e.g.:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu126
+torch>=2.6              # transformers refuses older torch (CVE-2025-32434)
+numpy>=1.24
+scipy>=1.10
+soundfile>=0.12        # libsndfile >= 1.1 -> MP3 read/write without ffmpeg
+librosa>=0.10
+scikit-learn>=1.3
+pyyaml>=6.0
+tqdm>=4.66
+transformers>=4.40     # XLS-R feature extractor
+onnx>=1.15
+onnxruntime>=1.17
+streamlit>=1.40        # st.audio_input
+matplotlib>=3.7
+pytest>=8.0

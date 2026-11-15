@@ -1,0 +1,4 @@
+model,dataset,eer_percent,n_real,n_fake
+student,asvspoof_eval,8.34,7355,63882
+student,itw_test,9.3,5622,1872
+student,deepvoice_test,17.55,203,2276
